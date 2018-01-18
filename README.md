@@ -25,7 +25,7 @@ The required python packages can be installed with (see [python-common](https://
     pip install -r nomad-lab-base/python-common/requirements.txt
 
 ### Usage
-NAMD md (namd2 executable) log output files can be parsed with:
+NAMD (namd2 executable) log output files can be parsed with:
 
     python NAMDParser.py [path/toFile]
 
