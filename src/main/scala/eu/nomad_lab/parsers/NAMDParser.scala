@@ -23,7 +23,7 @@ object NAMDParser extends SimpleExternalParserGenerator(
   ),
   mainFileTypes = Seq("text/.*"),
   mainFileRe = """\s*Info:\s*NAMD\s*[0-9.]+\s*for\s*""".r,
-  cmd = Seq(DefaultPythonInterpreter.pythonExe(), "${envDir}/parsers/gromacs/parser/parser-namd/NAMDParser.py",
+  cmd = Seq(DefaultPythonInterpreter.pythonExe(), "${envDir}/parsers/namd/parser/parser-namd/NAMDParser.py",
     "${mainFilePath}"),
   resList = Seq(
     "parser-namd/NAMDParser.py",
@@ -39,6 +39,6 @@ object NAMDParser extends SimpleExternalParserGenerator(
     "nomad_meta_info" -> "nomad-meta-info/meta_info/nomad_meta_info",
     "python" -> "python-common/common/python/nomadcore"
   ) ++ DefaultPythonInterpreter.commonDirMapping(),
-  metaInfoEnv = Some(lab.meta.KnownMetaInfoEnvs.gromacs)
+  metaInfoEnv = Some(lab.meta.KnownMetaInfoEnvs.namd)
 )
 
