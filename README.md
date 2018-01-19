@@ -1,6 +1,6 @@
 # NAMD Parser
 [NOMAD Laboratory CoE](http://nomad-coe.eu) parser for [NAMD](http://www.ks.uiuc.edu/Research/namd/)
-## Version 0.0.1
+## Version 0.0.2
 
 This is the parser for NAMD Molecular Dynamics (namd2) in [NAMD](http://www.ks.uiuc.edu/Research/namd/).
 The official version lives at:
