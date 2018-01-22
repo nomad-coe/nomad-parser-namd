@@ -632,16 +632,16 @@ def get_updateDictionary(self, defname):
         'time_single_configuration_calculation_date_start' : MetaInfoMap(startpage),
         'time_single_configuration_calculation_wall_end' : MetaInfoMap(startpage),
         'time_single_configuration_calculation_wall_start' : MetaInfoMap(startpage),
-        'stress_tensor_kind' : MetaInfoMap(startpage,
-            depends=[
-                {'test' : [['minimization', ' is not None']], 
-                 'assign' : 'geometry_optimization'},
-                {'test' : [['minimization', ' is None']],
-                 'assign' : 'molecular_dynamics'}
-                ],
-            activeInfo=True,
-            lookupdict=self.extraDict
-            ),
+        #'stress_tensor_kind' : MetaInfoMap(startpage,
+        #    depends=[
+        #        {'test' : [['minimization', ' is not None']], 
+        #         'assign' : 'geometry_optimization'},
+        #        {'test' : [['minimization', ' is None']],
+        #         'assign' : 'molecular_dynamics'}
+        #        ],
+        #    activeInfo=True,
+        #    lookupdict=self.extraDict
+        #    ),
         'stress_tensor_value' : MetaInfoMap(startpage)
         }
 
