@@ -6,16 +6,16 @@ import org.{ json4s => jn }
 import eu.{ nomad_lab => lab }
 import scala.collection.breakOut
 
-object NAMDParser extends SimpleExternalParserGenerator(
-  name = "NAMDParser",
+object NamdParser extends SimpleExternalParserGenerator(
+  name = "NamdParser",
   parserInfo = jn.JObject(
-    ("name" -> jn.JString("NAMDParser")) ::
-      ("parserId" -> jn.JString("NAMDParser" + lab.NAMDVersionInfo.version)) ::
+    ("name" -> jn.JString("NamdParser")) ::
+      ("parserId" -> jn.JString("NamdParser" + lab.NamdVersionInfo.version)) ::
       ("versionInfo" -> jn.JObject(
         ("nomadCoreVersion" -> jn.JObject(lab.NomadCoreVersionInfo.toMap.map {
           case (k, v) => k -> jn.JString(v.toString)
         }(breakOut): List[(String, jn.JString)])) ::
-          (lab.NAMDVersionInfo.toMap.map {
+          (lab.NamdVersionInfo.toMap.map {
             case (key, value) =>
               (key -> jn.JString(value.toString))
           }(breakOut): List[(String, jn.JString)])
@@ -33,7 +33,7 @@ object NAMDParser extends SimpleExternalParserGenerator(
     "nomad_meta_info/public.nomadmetainfo.json",
     "nomad_meta_info/common.nomadmetainfo.json",
     "nomad_meta_info/meta_types.nomadmetainfo.json",
-    "nomad_meta_info/namd.nomadmetainfo.json",
+    "nomad_meta_info/namd.nomadmetainfo.json"
   ) ++ DefaultPythonInterpreter.commonFiles(),
   dirMap = Map(
     "parser-namd" -> "parsers/namd/parser/parser-namd",
