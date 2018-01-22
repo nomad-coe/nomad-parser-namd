@@ -272,6 +272,13 @@ class NAMDParser(SmartParser.ParserBase):
         self.metaStorage.updateBackend(backend.superBackend, 
                 startsection=[PARSERTAG+'_section_control_parameters'],
                 autoopenclose=False)
+        nparms = 0
+        nparmKey = isMetaStrInDict("PARAMETERS",self.cntrlDict)
+        if nparmKey is not None:
+            if self.cntrlDict[nparmKey].activeInfo:
+                nparms = np.array(self.cntrlDict[nparmKey].value).shape[0]
+        if nparms>0:
+            backend.superBackend.addValue(PARSERTAG+"_inout_control_number_of_parameters", int(nparms))
         # NAMD prints the initial and final energies to the log file.
         # The total number of MD steps in NAMD is nsteps irrelevant 
         # to the number of steps in log file of energy file (.edr)
