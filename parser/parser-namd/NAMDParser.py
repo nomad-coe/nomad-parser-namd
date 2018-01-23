@@ -535,8 +535,9 @@ class NAMDParser(SmartParser.ParserBase):
             # Positions in PDB/NAMD binary/DCD files are stored in A.
             #pos_obj = getattr(self.trajectory, 'positions', None)
             #if callable(pos_obj):
-            SloppyBackend.addArrayValues('atom_positions', np.transpose(np.asarray(
-                self.metaStorage.convertUnits(positions, "Angstrom", self.unitDict))))
+            if(isinstance(positions, np.ndarray) or isinstance(positions, (tuple, list))):
+                SloppyBackend.addArrayValues('atom_positions', np.transpose(np.asarray(
+                    self.metaStorage.convertUnits(positions, "Angstrom", self.unitDict))))
             if coordinates.velocities is not None:
                 # Velocities in PDB files are stored in A/ps units.(PDB files are read for input 
                 #     coordinates, velocities, and forces)
@@ -799,7 +800,7 @@ class NAMDParser(SmartParser.ParserBase):
         if value is not None:
             for k,v in keyMapper.items():
                 if fname in k:
-                    return value*timestep
+                    return float(value)*timestep
         return value
     
     def build_subMatchers(self):
