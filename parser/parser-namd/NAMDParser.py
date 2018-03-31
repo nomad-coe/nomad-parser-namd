@@ -153,6 +153,9 @@ class NAMDParser(SmartParser.ParserBase):
         self.secOpen = open_section
         self.superP = self.parser.backend.superBackend
         self.MDData = MDDA.MDDataAccess()
+        if self.recordList:
+            self.recordList.close()
+        self.recordList = io.StringIO()
 
     def startedParsing(self, fInName, parser):
         """Function is called when the parsing starts.
@@ -170,11 +173,11 @@ class NAMDParser(SmartParser.ParserBase):
         # allows to reset values if the same superContext is used to parse different files
         self.initialize_values()
 
-    def peekline(self, parser):
-        pos = parser.fIn.fIn.tell()
-        line = parser.fIn.fIn.readline()
-        parser.fIn.fIn.seek(pos)
-        return line
+    #def peekline(self, parser):
+    #    pos = parser.fIn.fIn.tell()
+    #    line = parser.fIn.fIn.readline()
+    #    parser.fIn.fIn.seek(pos)
+    #    return line
 
     def onClose_section_run(self, backend, gIndex, section):
         """Trigger called when section_run is closed.
@@ -1172,6 +1175,10 @@ class NAMDParser(SmartParser.ParserBase):
                            stopOnMatchStr=r"\s*Info:\s*(?:SUMMARY\s*OF\s*PARAMETERS|"
                                            "STRUCTURE\s*SUMMARY|Entering\s*startup)",
                            quitOnMatchStr=None, 
+                           stopControl="stopControl", # if None or True, stop with quitMatch, else wait
+                           record=False, # if False or None, no record, no replay
+                           replay=0, # if 0 or None= no replay, if <0 infinite replay
+                           parseOnlyRecorded=False, # if True, parsers only work on record
                            ordered=False,
                            subParsers=mdinoutSubParsers)
                        ), # END SectionControlParm
@@ -1184,6 +1191,10 @@ class NAMDParser(SmartParser.ParserBase):
                        self.adHoc_takingover_parsing(p,
                            stopOnMatchStr=r"^\s*$",
                            quitOnMatchStr=r"^\s*$",
+                           stopControl="stopControl", # if None or True, stop with quitMatch, else wait
+                           record=False, # if False or None, no record, no replay
+                           replay=0, # if 0 or None= no replay, if <0 infinite replay
+                           parseOnlyRecorded=False, # if True, parsers only work on record
                            ordered=False,
                            subParsers=fileinSubParsers),
                        ),
@@ -1210,6 +1221,10 @@ class NAMDParser(SmartParser.ParserBase):
                                      self.adHoc_takingover_parsing(p,
                                          stopOnMatchStr=r"^====================================================",
                                          quitOnMatchStr=r"^====================================================",
+                                         stopControl="stopControl", # if None or True, stop with quitMatch, else wait
+                                         record=False, # if False or None, no record, no replay
+                                         replay=0, # if 0 or None= no replay, if <0 infinite replay
+                                         parseOnlyRecorded=False, # if True, parsers only work on record
                                          ordered=False,
                                          onlySubParsersReadLine=True,
                                          subParsers=mdoutSubParsers)
