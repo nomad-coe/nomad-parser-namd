@@ -20,6 +20,7 @@ import os
 import re
 import sys
 import datetime
+import io
 
 ############################################################
 # This is the parser for the main file of NAMD.
