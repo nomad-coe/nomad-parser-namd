@@ -5,7 +5,7 @@
 This is the parser for NAMD Molecular Dynamics (namd2) in [NAMD](http://www.ks.uiuc.edu/Research/namd/).
 The official version lives at:
 
-    git@gitlab.mpcdf.mpg.de:nomad-lab/parser-namd.git
+    git clone git@gitlab.mpcdf.mpg.de:nomad-lab/parser-namd.git
 
 You can browse it at:
 
