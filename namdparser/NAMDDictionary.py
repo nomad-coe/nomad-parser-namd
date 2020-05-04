@@ -1,22 +1,21 @@
 # Copyright 2018-2018 Berk Onat, Fawzi Mohamed
-# 
+#
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #   You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 #   Unless required by applicable law or agreed to in writing, software
 #   distributed under the License is distributed on an "AS IS" BASIS,
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import setup_paths
 import numpy as np
-from NAMDCommon import PARSERNAME, PROGRAMNAME, PARSERTAG
+from .NAMDCommon import PARSERNAME, PROGRAMNAME, PARSERTAG
 from nomadcore.smart_parser.SmartParserDictionary import metaNameConverter, metaNameConverter_UnderscoreSpaceDash
-from nomadcore.smart_parser.SmartParserDictionary import MetaInfoMap, FileInfoMap, MapDictionary 
+from nomadcore.smart_parser.SmartParserDictionary import MetaInfoMap, FileInfoMap, MapDictionary
 from nomadcore.smart_parser.SmartParserDictionary import getDict_MetaStrInDict, getList_MetaStrInDict, get_unitDict
 import nomadcore.md_data_access.MDDataAccess as MDData
 
@@ -26,7 +25,7 @@ def get_fileListDict():
     Returns:
         the list of defaults file namelists
     """
-    
+
     startpage = {
         'nameTranslate'   : metaNameConverter,
         'metaHeader'      : PARSERTAG,
@@ -36,19 +35,19 @@ def get_fileListDict():
         'activeSections'  : [PARSERTAG+'_section_input_output_files']
         }
     namelist = {
-        'structure'     : FileInfoMap(startpage, fileFormat=['.psf'], activeInfo=True, 
+        'structure'     : FileInfoMap(startpage, fileFormat=['.psf'], activeInfo=True,
                                       infoPurpose=['topology', 'unitcell']),
-        'traj_coord'    : FileInfoMap(startpage, fileFormat=['.dcd'], activeInfo=True, 
+        'traj_coord'    : FileInfoMap(startpage, fileFormat=['.dcd'], activeInfo=True,
                                       infoPurpose=['trajectory', 'unitcell']),
         'traj_vel'      : FileInfoMap(startpage, fileFormat=['.dcd'], activeInfo=True,
                                       infoPurpose=['velocities']),
-        'traj_force'    : FileInfoMap(startpage, fileFormat=['.dcd'], activeInfo=True, 
+        'traj_force'    : FileInfoMap(startpage, fileFormat=['.dcd'], activeInfo=True,
                                       infoPurpose=['forces']),
         'output_coord'  : FileInfoMap(startpage, fileFormat=['.namdbin'], activeInfo=False,
                                       infoPurpose=['outputcoordinates', 'unitcell']),
-        'output_vel'    : FileInfoMap(startpage, fileFormat=['.namdbin'], activeInfo=False, 
+        'output_vel'    : FileInfoMap(startpage, fileFormat=['.namdbin'], activeInfo=False,
                                       infoPurpose=['outputvelocities']),
-        'output_force'  : FileInfoMap(startpage, fileFormat=['.namdbin'], activeInfo=False, 
+        'output_force'  : FileInfoMap(startpage, fileFormat=['.namdbin'], activeInfo=False,
                                       infoPurpose=['outputforces']),
         'input_coord'   : FileInfoMap(startpage, fileFormat=['.pdb'],
                                       infoPurpose=['inputcoordinates', 'inputunitcell']),
@@ -71,11 +70,11 @@ def get_nameListDict(deflist):
 
     matchWith parameters:
         EOL = End of line
-        PL  = Match with previous line 
+        PL  = Match with previous line
         PW  = Previous word
         NW  = Next word (until space, comma) (DEFAULT)
         UD  = until delimeter (can be any string/character)
-        
+
         The text matched inside apostrophe or qoutation is extracted
 
     Returns:
@@ -224,11 +223,11 @@ def get_nameListDict(deflist):
         'activeSections'  : ['section_single_configuration_calculation']
         })
     mddatalist = {
-        'WRITING COORDINATES TO DCD FILE' : MetaInfoMap(startpage, 
+        'WRITING COORDINATES TO DCD FILE' : MetaInfoMap(startpage,
             replaceTag='DCDSTEP', subFunc=lambda x: x.split()[-1].replace('\n','').strip()),
-        'WRITING VELOCITIES TO DCD FILE AT STEP' : MetaInfoMap(startpage, 
+        'WRITING VELOCITIES TO DCD FILE AT STEP' : MetaInfoMap(startpage,
             replaceTag='VELSTEP', subFunc=lambda x: x.replace('\n','').strip()),
-        'WRITING FORCES TO DCD FILE AT STEP' : MetaInfoMap(startpage, 
+        'WRITING FORCES TO DCD FILE AT STEP' : MetaInfoMap(startpage,
             replaceTag='FORCESTEP', subFunc=lambda x: x.replace('\n','').strip()),
         'TS' : MetaInfoMap(startpage),
         'BOND' : MetaInfoMap(startpage),
@@ -299,7 +298,7 @@ def set_Dictionaries(self):
         self.stepcontrolDict = {
             'logsteps'       : None,
             'nextlogsteps'   : None,
-            'trajsteps'      : None, 
+            'trajsteps'      : None,
             'velsteps'       : None,
             'forcesteps'     : None,
             'steps'          : None,
@@ -313,12 +312,12 @@ def set_Dictionaries(self):
             'mddata' : self.mddataDict,
             'extra'  : self.extraDict,
             }
-        self.sectionDict = { 
-                'section' : { 
-                    "metaNameTag"      : ['input_output_files', 
-                                          'control_parameters'], 
-                    "listTypStr"       : 'type_section', 
-                    "repeatingSection" : False, 
+        self.sectionDict = {
+                'section' : {
+                    "metaNameTag"      : ['input_output_files',
+                                          'control_parameters'],
+                    "listTypStr"       : 'type_section',
+                    "repeatingSection" : False,
                     "supraNames"       : ["section_run"]
                     }
                 }
@@ -340,7 +339,7 @@ def get_updateDictionary(self, defname):
             if(st is not None and isinstance(st, str)):
                 if("[" in st or "(" in st):
                     val.append(list(storedtext))
-        if val: 
+        if val:
             return False, np.linalg.norm(np.asarray(val)), itemdict
         else:
             return False, itemdict["value"], itemdict
@@ -355,27 +354,27 @@ def get_updateDictionary(self, defname):
     # ---------------------------------------------------------------
     #   Definitions of meta data values for section_sampling_method
     # ---------------------------------------------------------------
-    sampling = { 
+    sampling = {
         'ensemble_type' : MetaInfoMap(startpage, activeInfo=True,
             depends=[
-                {'test' : [['minimization', ' is None'], 
+                {'test' : [['minimization', ' is None'],
                            ['thermostat', ' in [\"tcouple\",'
                                           '\"rescale\",'
                                           '\"reassign\",'
                                           '\"andersen\",'
-                                          '\"langevin\"]'], 
+                                          '\"langevin\"]'],
                            ['barostat', ' in [\"berendsen\",'
-                                         '\"langevin\"]']], 
+                                         '\"langevin\"]']],
                  'assign' : 'NPT'},
-                {'test' : [['minimization', ' is None'], 
-                           ['thermostat', ' in [\"langevin\"]'], 
+                {'test' : [['minimization', ' is None'],
+                           ['thermostat', ' in [\"langevin\"]'],
                            ['thermostat', ' not in [\"tcouple\",'
                                           '\"rescale\",'
                                           '\"reassign\",'
                                           '\"andersen\"]'],
                            ['barostat', ' is None']],
                  'assign' : 'Langevin'},
-                {'test' : [['minimization', ' is None'], 
+                {'test' : [['minimization', ' is None'],
                            ['thermostat', ' in [\"tcouple\",'
                                           '\"rescale\",'
                                           '\"reassign\",'
@@ -384,16 +383,16 @@ def get_updateDictionary(self, defname):
                  'assign' : 'NVT'},
                 {'test' : [['minimization', ' is None'],
                            ['thermostat', ' is None'],
-                           ['barostat', ' is None']], 
+                           ['barostat', ' is None']],
                  'assign' : 'NVE'},
-                {'test' : [['minimization', ' is not None']], 
+                {'test' : [['minimization', ' is not None']],
                  'assign' : 'minimization'},
                 ],
             lookupdict=self.extraDict
             ),
-        'sampling_method' : MetaInfoMap(startpage, activeInfo=True, 
+        'sampling_method' : MetaInfoMap(startpage, activeInfo=True,
             depends=[
-                {'test' : [['minimization', ' is not None']], 
+                {'test' : [['minimization', ' is not None']],
                  'assign' : 'geometry_optimization'},
                 {'test' : [['minimization', ' is None']],
                  'assign' : 'molecular_dynamics'}
@@ -413,9 +412,9 @@ def get_updateDictionary(self, defname):
 #       'geometry_optimization_geometry_change' : MetaInfoMap(startpage),
         'geometry_optimization_method' : MetaInfoMap(startpage,
             depends=[
-                {'test' : [['minimization', ' == \"cg\"']], 
+                {'test' : [['minimization', ' == \"cg\"']],
                  'assign' : 'CG'},
-                {'test' : [['minimization', ' == \"quench\"']], 
+                {'test' : [['minimization', ' == \"quench\"']],
                  'assign' : 'Velocity Quenching'},
                 ],
             lookupdict=self.extraDict,
@@ -424,12 +423,12 @@ def get_updateDictionary(self, defname):
 #       'geometry_optimization_threshold_force' : MetaInfoMap(startpage),
         'x_namd_barostat_type' : MetaInfoMap(startpage,
             depends=[
-                {'test' : [['minimization', ' is None'], 
+                {'test' : [['minimization', ' is None'],
                            ['barostat', '== \"berendsen\"']],
                  'assign' : 'Berendsen'},
-                {'test' : [['minimization', ' is None'], 
+                {'test' : [['minimization', ' is None'],
                            ['barostat', '== \"langevin\"']],
-                 'assign' : 'Nose-Hoover Langevin'} 
+                 'assign' : 'Nose-Hoover Langevin'}
                 ],
             lookupdict=self.extraDict,
             #autoSections=True,
@@ -439,7 +438,7 @@ def get_updateDictionary(self, defname):
         'x_namd_barostat_target_pressure' : MetaInfoMap(startpage,
             depends=[
                 {'test' : [['TARGET PRESSURE', ' is not None']],
-                 'value' : 'TARGET PRESSURE'} 
+                 'value' : 'TARGET PRESSURE'}
                 ],
             lookupdict=self.cntrlDict,
             valtype='float',
@@ -452,9 +451,9 @@ def get_updateDictionary(self, defname):
         'x_namd_barostat_tau' : MetaInfoMap(startpage,
             depends=[
                 {'test' : [['LANGEVIN OSCILLATION PERIOD', ' is not None']],
-                 'value' : 'LANGEVIN OSCILLATION PERIOD'}, 
+                 'value' : 'LANGEVIN OSCILLATION PERIOD'},
                 {'test' : [['BERENDSEN RELAXATION TIME', ' is not None']],
-                 'value' : 'BERENDSEN RELAXATION TIME'} 
+                 'value' : 'BERENDSEN RELAXATION TIME'}
                 ],
             lookupdict=self.cntrlDict,
             valtype='float',
@@ -467,7 +466,7 @@ def get_updateDictionary(self, defname):
         'x_namd_integrator_type' : MetaInfoMap(startpage,
             depends=[
                 {'test' : [['integrator', ' is not None']],
-                 'value' : 'integrator'}, 
+                 'value' : 'integrator'},
                 {'test' : [['thermostat', ' == \"langevin\"']],
                  'assign' : 'Langevin'}
                 ],
@@ -500,21 +499,21 @@ def get_updateDictionary(self, defname):
             ),
         'x_namd_thermostat_type' : MetaInfoMap(startpage,
             depends=[
-                {'test' : [['minimization', ' is None'], 
+                {'test' : [['minimization', ' is None'],
                            ['thermostat', ' == \"tcouple\"']],
-                 'assign' : 'Berendsen'}, 
-                {'test' : [['minimization', ' is None'], 
+                 'assign' : 'Berendsen'},
+                {'test' : [['minimization', ' is None'],
                            ['thermostat', ' == \"rescale\"']],
-                 'assign' : 'Velocity Rescaling'}, 
-                {'test' : [['minimization', ' is None'], 
+                 'assign' : 'Velocity Rescaling'},
+                {'test' : [['minimization', ' is None'],
                            ['thermostat', ' == \"reassign\"']],
-                 'assign' : 'Velocity Reassigning'}, 
-                {'test' : [['minimization', ' is None'], 
+                 'assign' : 'Velocity Reassigning'},
+                {'test' : [['minimization', ' is None'],
                            ['thermostat', ' == \"andersen\"']],
-                 'assign' : 'Andersen'}, 
-                {'test' : [['minimization', ' is None'], 
-                           ['thermostat', ' == \"langevin\"']], 
-                 'assign' : 'Nose-Hoover Langevin'}, 
+                 'assign' : 'Andersen'},
+                {'test' : [['minimization', ' is None'],
+                           ['thermostat', ' == \"langevin\"']],
+                 'assign' : 'Nose-Hoover Langevin'},
                 ],
             lookupdict=self.extraDict,
             #autoSections=True,
@@ -592,7 +591,7 @@ def get_updateDictionary(self, defname):
     # ------------------------------------------------------------
     #   Definitions for section_single_configuration_calculation
     # ------------------------------------------------------------
-    singleconfcalc = { 
+    singleconfcalc = {
         #'atom_forces_type' : MetaInfoMap(startpage,
         #    depends=[{'assign' : 'Force Field'}],
         #    lookupdict=self.mddataDict
@@ -648,7 +647,7 @@ def get_updateDictionary(self, defname):
         'time_single_configuration_calculation_wall_start' : MetaInfoMap(startpage),
         #'stress_tensor_kind' : MetaInfoMap(startpage,
         #    depends=[
-        #        {'test' : [['minimization', ' is not None']], 
+        #        {'test' : [['minimization', ' is not None']],
         #         'assign' : 'geometry_optimization'},
         #        {'test' : [['minimization', ' is None']],
         #         'assign' : 'molecular_dynamics'}
@@ -671,11 +670,11 @@ def get_updateDictionary(self, defname):
             activeSections=['section_energy_van_der_Waals']
             ),
         }
-   
+
     # ------------------------------------------
     #   Definitions for section_frame_sequence
     # ------------------------------------------
-    frameseq = { 
+    frameseq = {
         #'frame_sequence_conserved_quantity_frames' : MetaInfoMap(startpage,
         #    depends=[{'store' : 'TS'}],
         #    valtype='int',
@@ -950,7 +949,7 @@ def get_updateDictionary(self, defname):
         #'previous_sequence_ref' : MetaInfoMap(startpage)
         }
 
-    frameseqend = { 
+    frameseqend = {
         #'number_of_conserved_quantity_evaluations_in_sequence' : MetaInfoMap(startpage,
         #    activeInfo=True,
         #    value=(lambda x: np.array(x['val']).flatten().shape[0] if(
@@ -1158,7 +1157,7 @@ def get_updateDictionary(self, defname):
         'spacegroup_3D_wyckoff' : MetaInfoMap(startpage),
         'symmorphic' : MetaInfoMap(startpage),
         'system_name' : MetaInfoMap(startpage,
-            subfunction={ 
+            subfunction={
                 'function' : MDData.MDDataConverter.topology_system_name,
                 'supportDict' : self.topoDict,
                 },
@@ -1285,7 +1284,7 @@ def get_updateDictionary(self, defname):
         'number_of_atoms_per_molecule_interaction' : MetaInfoMap(startpage),
         'number_of_molecule_interactions' : MetaInfoMap(startpage)
         }
-   
+
     # section_atom_in_molecule of section_molecule_type
     atom_in_mol = {
         'atom_in_molecule_charge' : MetaInfoMap(startpage),

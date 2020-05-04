@@ -1,11 +1,11 @@
 # Copyright 2018-2018 Berk Onat, Fawzi Mohamed
-# 
+#
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
 #   You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 #   Unless required by applicable law or agreed to in writing, software
 #   distributed under the License is distributed on an "AS IS" BASIS,
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,6 @@
 from builtins import map
 from builtins import range
 from builtins import object
-import setup_paths
 import numpy as np
 import nomadcore.ActivateLogging
 from nomadcore.caching_backend import CachingLevel
@@ -24,9 +23,9 @@ from nomadcore.smart_parser import SmartParserCommon as SmartParser
 from nomadcore.smart_parser.SmartParserCommon import get_metaInfo, conv_str, conv_int, conv_float, open_section
 from nomadcore.smart_parser.SmartParserDictionary import getList_MetaStrInDict, getDict_MetaStrInDict
 from nomadcore.smart_parser.SmartParserDictionary import isMetaStrInDict
-from NAMDDictionary import get_updateDictionary, set_Dictionaries
-from NAMDCommon import PARSERNAME, PROGRAMNAME, PARSERVERSION, PARSERTAG, LOGGER
-from NAMDCommon import PARSER_INFO_DEFAULT, META_INFO_PATH, set_excludeList, set_includeList
+from .NAMDDictionary import get_updateDictionary, set_Dictionaries
+from .NAMDCommon import PARSERNAME, PROGRAMNAME, PARSERVERSION, PARSERTAG, LOGGER
+from .NAMDCommon import PARSER_INFO_DEFAULT, META_INFO_PATH, set_excludeList, set_includeList
 from nomadcore.md_data_access import MDDataAccess as MDDA
 import argparse
 import logging
@@ -61,7 +60,7 @@ class NAMDParser(SmartParser.ParserBase):
                                }
         SmartParser.ParserBase.__init__(
             self, re_program_name=re.compile(r"\s*"+PROGRAMNAME+"$"),
-            parsertag=PARSERTAG, metainfopath=META_INFO_PATH, 
+            parsertag=PARSERTAG, metainfopath=META_INFO_PATH,
             parserinfodef=PARSER_INFO_DEFAULT)
 
         set_Dictionaries(self)
@@ -79,27 +78,27 @@ class NAMDParser(SmartParser.ParserBase):
             metaInfo = self.metaInfoEnv.infoKinds[name]
             if (name.startswith(PARSERTAG + '_mdin_') and
                 metaInfo.kindStr == "type_document_content" and
-                (PARSERTAG + "_mdin_method" in metaInfo.superNames or 
-                 PARSERTAG + "_mdin_run" in metaInfo.superNames or 
+                (PARSERTAG + "_mdin_method" in metaInfo.superNames or
+                 PARSERTAG + "_mdin_run" in metaInfo.superNames or
                  PARSERTAG + "_mdin_system" in metaInfo.superNames) or
                 name.startswith(PARSERTAG + '_parm_') and
                 metaInfo.kindStr == "type_document_content" and
-                (PARSERTAG + "_mdin_method" in metaInfo.superNames or 
+                (PARSERTAG + "_mdin_method" in metaInfo.superNames or
                  PARSERTAG + "_mdin_run" in metaInfo.superNames or
                  PARSERTAG + "_mdin_system" in metaInfo.superNames) or
                 #name.startswith(PARSERTAG + '_mdin_file_') and
                 name.startswith(PARSERTAG + '_inout_file_') or
                 #metaInfo.kindStr == "type_document_content" and
-                #(PARSERTAG + "_section_input_output_files" in metaInfo.superNames or 
+                #(PARSERTAG + "_section_input_output_files" in metaInfo.superNames or
                 # "section_run" in metaInfo.superNames) or
                 name.startswith(PARSERTAG + '_inout_control_') or
-                #(PARSERTAG + "_section_control_parameters" in metaInfo.superNames) or 
+                #(PARSERTAG + "_section_control_parameters" in metaInfo.superNames) or
                 #name.startswith(PARSERTAG + '_mdin_') and
                 #(PARSERTAG + "_section_control_parameters" in metaInfo.superNames) or
                 name.startswith(PARSERTAG + '_mdout_') or
                 name.startswith(PARSERTAG + '_mdout_') and
                 #metaInfo.kindStr == "type_document_content" and
-                (PARSERTAG + "_mdout_method" in metaInfo.superNames or 
+                (PARSERTAG + "_mdout_method" in metaInfo.superNames or
                  PARSERTAG + "_mdout_system" in metaInfo.superNames or
                  "section_run" in metaInfo.superNames or
                  PARSERTAG + "_mdout_single_configuration_calculation" in metaInfo.superNames)
@@ -197,8 +196,8 @@ class NAMDParser(SmartParser.ParserBase):
     def onClose_section_run(self, backend, gIndex, section):
         """Trigger called when section_run is closed.
 
-        Write the keywords from control parametres and 
-        the NAMD output from the parsed log output, 
+        Write the keywords from control parametres and
+        the NAMD output from the parsed log output,
         which belong to settings_run.
         Variables are reset to ensure clean start for new run.
         """
@@ -211,7 +210,7 @@ class NAMDParser(SmartParser.ParserBase):
                 'dictionary' : section_frameseq_Dict
                 }
         self.metaStorage.update(updateFrameDict)
-        self.metaStorage.updateBackend(backend.superBackend, 
+        self.metaStorage.updateBackend(backend.superBackend,
                 startsection=['section_frame_sequence'],
                 autoopenclose=False)
         backend.addValue("frame_sequence_to_sampling_ref", self.secSamplingGIndex)
@@ -226,14 +225,14 @@ class NAMDParser(SmartParser.ParserBase):
 
         Determine whether topology, trajectory and input coordinate files are
         supplied to the parser
-        
+
         Initiates topology and trajectory file handles.
 
-        Captures topology, atomic positions, atom labels, lattice vectors and 
-        stores them before section_system and 
+        Captures topology, atomic positions, atom labels, lattice vectors and
+        stores them before section_system and
         section_single_configuration_calculation are encountered.
         """
-        # Checking whether topology, input 
+        # Checking whether topology, input
         # coordinates and trajectory files exist
         atLeastOneFileExist = False
         working_dir_name = os.path.dirname(os.path.abspath(self.fName))
@@ -287,7 +286,7 @@ class NAMDParser(SmartParser.ParserBase):
             'dictionary'   : section_control_Dict
             }
         self.metaStorage.update(updateDict)
-        self.metaStorage.updateBackend(backend.superBackend, 
+        self.metaStorage.updateBackend(backend.superBackend,
                 startsection=[PARSERTAG+'_section_control_parameters'],
                 autoopenclose=False)
         nparms = 0
@@ -298,7 +297,7 @@ class NAMDParser(SmartParser.ParserBase):
         if nparms>0:
             backend.superBackend.addValue(PARSERTAG+"_inout_control_number_of_parameters", int(nparms))
         # NAMD prints the initial and final energies to the log file.
-        # The total number of MD steps in NAMD is nsteps irrelevant 
+        # The total number of MD steps in NAMD is nsteps irrelevant
         # to the number of steps in log file of energy file (.edr)
         nsteps = 0
         nlogsteps = 0
@@ -307,8 +306,8 @@ class NAMDParser(SmartParser.ParserBase):
         noutputstep = 0
         nbinsteps = 0
         ntrajsteps = 0
-        nvelsteps = 0 
-        nforcesteps = 0 
+        nvelsteps = 0
+        nforcesteps = 0
         nstructKey = isMetaStrInDict("STRUCTURE FILE",self.cntrlDict)
         ninputKey = isMetaStrInDict("COORDINATE PDB",self.cntrlDict)
         noutputKey = isMetaStrInDict("OUTPUT FILENAME",self.cntrlDict)
@@ -354,7 +353,7 @@ class NAMDParser(SmartParser.ParserBase):
         if nfoutKey is not None:
             if self.cntrlDict[nfoutKey].activeInfo:
                 nforcesteps = conv_int(self.cntrlDict[nfoutKey].value, default=0)
-        
+
         if nlogsteps>0:
             logsteps = [i for i in range(0, nsteps, nlogsteps)]
             logsteps.append(nsteps)
@@ -442,11 +441,11 @@ class NAMDParser(SmartParser.ParserBase):
             'dictionary' : section_sampling_Dict
             }
         self.metaStorage.update(updateDict)
-        self.metaStorage.updateBackend(backend.superBackend, 
+        self.metaStorage.updateBackend(backend.superBackend,
                 startsection=['section_run'],
                 #startsection=['section_sampling_method'],
                 autoopenclose=False)
-    
+
     def onOpen_section_topology(self, backend, gIndex, section):
         # keep track of the latest topology description section
         if (gIndex is None or gIndex == -1 or gIndex == "-1"):
@@ -465,7 +464,7 @@ class NAMDParser(SmartParser.ParserBase):
             'dictionary' : section_topology_Dict
             }
         self.metaStorage.update(updateDict)
-        self.metaStorage.updateBackend(backend.superBackend, 
+        self.metaStorage.updateBackend(backend.superBackend,
                 startsection=['section_topology'],
                 autoopenclose=False)
         self.topology_atom_type_and_interactions(backend, gIndex)
@@ -491,7 +490,7 @@ class NAMDParser(SmartParser.ParserBase):
             SloppyBackend = backend.superBackend
         else:
             SloppyBackend = backend
-        
+
         numatoms = None
 
         # NAMD default unit vectors. If all are zeros than the simulation cell is not periodic.
@@ -515,10 +514,10 @@ class NAMDParser(SmartParser.ParserBase):
         if self.trajectory is not None:
             if self.trajectory.unitcell_vectors is None:
                 self.trajectory.unitcell_vectors = unit_vectors
-        
+
         if self.topology:
             if (self.secTopologyGIndex is None or
-                (self.secTopologyGIndex == -1 or 
+                (self.secTopologyGIndex == -1 or
                 self.secTopologyGIndex == "-1")):
                 self.onOpen_section_topology(backend, None, None)
                 self.onClose_section_topology(backend, None, None)
@@ -529,7 +528,7 @@ class NAMDParser(SmartParser.ParserBase):
         if self.trajectory is not None:
             coordinates=self.trajectory
             positions=self.atompositions
-        elif(self.inputcoords is not None and 
+        elif(self.inputcoords is not None and
              self.MDcurrentstep == steps[0]):
             coordinates=self.inputcoords
             positions=self.inputpositions
@@ -557,9 +556,9 @@ class NAMDParser(SmartParser.ParserBase):
                 SloppyBackend.addArrayValues('atom_positions', np.transpose(np.asarray(
                     self.metaStorage.convertUnits(positions, "Angstrom", self.unitDict))))
             if coordinates.velocities is not None:
-                # Velocities in PDB files are stored in A/ps units.(PDB files are read for input 
+                # Velocities in PDB files are stored in A/ps units.(PDB files are read for input
                 #     coordinates, velocities, and forces)
-                # Velocities in NAMD binary/DCD files are stored in NAMD internal units and must be multiplied 
+                # Velocities in NAMD binary/DCD files are stored in NAMD internal units and must be multiplied
                 #     by PDBVELFACTOR=20.45482706 to convert to A/ps. (These files are used for output trajectory)
                 SloppyBackend.addArrayValues('atom_velocities', np.transpose(np.asarray(
                     self.metaStorage.convertUnits(
@@ -663,7 +662,7 @@ class NAMDParser(SmartParser.ParserBase):
                 }
             self.secVDWGIndex = backend.superBackend.openSection("section_energy_van_der_Waals")
             self.metaStorage.update(updateDictVDW)
-            self.metaStorage.updateBackend(backend.superBackend, 
+            self.metaStorage.updateBackend(backend.superBackend,
                     startsection=['section_energy_van_der_Waals'],
                     autoopenclose=False)
             backend.superBackend.closeSection("section_energy_van_der_Waals", self.secVDWGIndex)
@@ -675,7 +674,7 @@ class NAMDParser(SmartParser.ParserBase):
                 'dictionary' : section_singlecalc_Dict
                 }
             self.metaStorage.update(updateDict)
-            self.metaStorage.updateBackend(backend.superBackend, 
+            self.metaStorage.updateBackend(backend.superBackend,
                     startsection=['section_single_configuration_calculation'],
                     autoopenclose=False)
         if self.MDcurrentstep in forcesteps:
@@ -688,7 +687,7 @@ class NAMDParser(SmartParser.ParserBase):
                         self.atompositions.velocities, "kcal/(mol*Angstrom)", self.unitDict))))
                 # need to transpose array since its shape is [number_of_atoms,3] in the metadata
 
-        if(self.MDcurrentstep in trajsteps or 
+        if(self.MDcurrentstep in trajsteps or
            self.MDcurrentstep in velsteps):
             #print("PRINTING traj steps:",self.MDcurrentstep,trajsteps)
             self.onOpen_section_system(backend, None, None)
@@ -696,12 +695,12 @@ class NAMDParser(SmartParser.ParserBase):
             backend.addValue('single_configuration_calculation_to_system_ref', self.secSystemGIndex)
             self.MDiter += 1
         else:
-            if(self.MDcurrentstep in logsteps or 
+            if(self.MDcurrentstep in logsteps or
                self.MDcurrentstep in forcesteps):
                 self.MDiter += 1
-            #if((self.MDcurrentstep in logsteps and 
-            #    self.MDiter+1 in steps) or 
-            #    (self.MDcurrentstep in forcesteps and 
+            #if((self.MDcurrentstep in logsteps and
+            #    self.MDiter+1 in steps) or
+            #    (self.MDcurrentstep in forcesteps and
             #    self.MDiter+1 in steps)):
             #    self.MDiter += 1
         #if self.MDiter<len(steps):
@@ -735,7 +734,7 @@ class NAMDParser(SmartParser.ParserBase):
             if fname in k:
                 return value+v
         return value
-    
+
     def mdInfoTrans(self, fname, value):
         mdInfoDict = {
                 "minimization" : [],
@@ -792,7 +791,7 @@ class NAMDParser(SmartParser.ParserBase):
                 else:
                     return value
         return value
-    
+
     def convertInt(self, fname, value):
         keyMapper = {
                 "TS" : "MDcurrentstep",
@@ -820,7 +819,7 @@ class NAMDParser(SmartParser.ParserBase):
                 if fname in k:
                     return float(value)*timestep
         return value
-    
+
     def build_subMatchers(self):
         """Builds the sub matchers to parse the main output file.
         """
@@ -834,24 +833,24 @@ class NAMDParser(SmartParser.ParserBase):
               "waitlist"          : None,
               "stopOnMatchStr"    : r"(?:^\s*$|\s*ENERGY:\s*)",
               "quitOnMatchStr"    : r"^====================================================",
-              "metaNameStart"     : PARSERTAG + "_mdout_", 
+              "metaNameStart"     : PARSERTAG + "_mdout_",
               "matchNameList"     : mddataNameList,
               "matchNameDict"     : "mddataDict",
               "updateMatchDict"   : True,
               "onlyCaseSensitive" : True,
               "stopOnFirstLine"   : False,
-              "parserOptions"     : { 
-                  "header"           : True, 
-                  "headersave"       : "mdoutHeaderDict", 
-                  "wrap"             : False, 
-                  "tablelines"       : 0, 
-                  "tablestartsat"    : r"\s*ETITLE:\s*", 
-                  "tableendsat"      : r"^\s*$", 
+              "parserOptions"     : {
+                  "header"           : True,
+                  "headersave"       : "mdoutHeaderDict",
+                  "wrap"             : False,
+                  "tablelines"       : 0,
+                  "tablestartsat"    : r"\s*ETITLE:\s*",
+                  "tableendsat"      : r"^\s*$",
                   "lineFilter"       : None,
                   "movetostopline"   : False,
                   "parsercntrlattr"  : "MDcurrentstep",
                   "parsercntrlin"    : "logsteps",
-                  "lookupdict"       : "stepcontrolDict" 
+                  "lookupdict"       : "stepcontrolDict"
                   }
               },
             # timestep energy outputs Parser
@@ -861,24 +860,24 @@ class NAMDParser(SmartParser.ParserBase):
               "waitlist"          : None,
               "stopOnMatchStr"    : r"(?:^\s*$|\s*ENERGY:\s*)",
               "quitOnMatchStr"    : r"^====================================================",
-              "metaNameStart"     : PARSERTAG + "_mdout_", 
+              "metaNameStart"     : PARSERTAG + "_mdout_",
               "matchNameList"     : mddataNameList,
               "matchNameDict"     : "mddataDict",
               "updateMatchDict"   : True,
               "onlyCaseSensitive" : True,
               "stopOnFirstLine"   : False,
-              "parserOptions"     : { 
-                  "header"           : False, 
-                  "headerList"       : "mdoutHeaderDict", 
-                  "wrap"             : False, 
-                  "tablelines"       : 0, 
-                  "tablestartsat"    : r"\s*ENERGY:\s*", 
-                  "tableendsat"      : r"^\s*$", 
+              "parserOptions"     : {
+                  "header"           : False,
+                  "headerList"       : "mdoutHeaderDict",
+                  "wrap"             : False,
+                  "tablelines"       : 0,
+                  "tablestartsat"    : r"\s*ENERGY:\s*",
+                  "tableendsat"      : r"^\s*$",
                   "lineFilter"       : None,
                   "movetostopline"   : False,
                   "parsercntrlattr"  : "MDcurrentstep",
                   "parsercntrlin"    : "logsteps",
-                  "lookupdict"       : "stepcontrolDict" 
+                  "lookupdict"       : "stepcontrolDict"
                   }
               },
             # trajectory Parser
@@ -887,15 +886,15 @@ class NAMDParser(SmartParser.ParserBase):
               "parsername"        : "dcd_parser",
               "stopOnMatchStr"    : r"\s*(?:ENERGY|TIMING|FINISHED|OPENING|The last)\s*",
               "quitOnMatchStr"    : r"\s*(?:ENERGY|TIMING|FINISHED|OPENING|The last)\s*",
-              "metaNameStart"     : PARSERTAG + "_mdout_", 
+              "metaNameStart"     : PARSERTAG + "_mdout_",
               "matchNameList"     : mddataNameList,
               "matchNameDict"     : "mddataDict",
               "updateMatchDict"   : False,
               "onlyCaseSensitive" : True,
               "stopOnFirstLine"   : True,
               "parserOptions"     : {
-                  "controlsections"  : ["section_single_configuration_calculation"], 
-                  "controlsave"      : "sectioncontrol", 
+                  "controlsections"  : ["section_single_configuration_calculation"],
+                  "controlsave"      : "sectioncontrol",
                   "controldict"      : "stepcontrolDict",
                   }
               },
@@ -905,15 +904,15 @@ class NAMDParser(SmartParser.ParserBase):
               "parsername"        : "veldcd_parser",
               "stopOnMatchStr"    : r"\s*(?:ENERGY|TIMING|FINISHED|OPENING|The last)\s*",
               "quitOnMatchStr"    : r"\s*(?:ENERGY|TIMING|FINISHED|OPENING|The last)\s*",
-              "metaNameStart"     : PARSERTAG + "_mdout_", 
+              "metaNameStart"     : PARSERTAG + "_mdout_",
               "matchNameList"     : mddataNameList,
               "matchNameDict"     : "mddataDict",
               "updateMatchDict"   : False,
               "onlyCaseSensitive" : True,
               "stopOnFirstLine"   : True,
               "parserOptions"     : {
-                  "controlsections"  : ["section_single_configuration_calculation"], 
-                  "controlsave"      : "sectioncontrol", 
+                  "controlsections"  : ["section_single_configuration_calculation"],
+                  "controlsave"      : "sectioncontrol",
                   "controldict"      : "stepcontrolDict",
                   }
               },
@@ -923,15 +922,15 @@ class NAMDParser(SmartParser.ParserBase):
               "parsername"        : "forcedcd_parser",
               "stopOnMatchStr"    : r"\s*(?:ENERGY|TIMING|FINISHED|OPENING|The last)\s*",
               "quitOnMatchStr"    : r"\s*(?:ENERGY|TIMING|FINISHED|OPENING|The last)\s*",
-              "metaNameStart"     : PARSERTAG + "_mdout_", 
+              "metaNameStart"     : PARSERTAG + "_mdout_",
               "matchNameList"     : mddataNameList,
               "matchNameDict"     : "mddataDict",
               "updateMatchDict"   : False,
               "onlyCaseSensitive" : True,
               "stopOnFirstLine"   : True,
               "parserOptions"     : {
-                  "controlsections"  : ["section_single_configuration_calculation"], 
-                  "controlsave"      : "sectioncontrol", 
+                  "controlsections"  : ["section_single_configuration_calculation"],
+                  "controlsave"      : "sectioncontrol",
                   "controldict"      : "stepcontrolDict",
                   }
               },
@@ -942,31 +941,31 @@ class NAMDParser(SmartParser.ParserBase):
               "waitlist"          : None,
               "stopOnMatchStr"    : "AlwaysStop",
               "quitOnMatchStr"    : "AlwaysStop",
-              "metaNameStart"     : PARSERTAG + "_mdout_", 
+              "metaNameStart"     : PARSERTAG + "_mdout_",
               "matchNameList"     : mddataNameList,
               "matchNameDict"     : "mddataDict",
               "updateMatchDict"   : True,
               "onlyCaseSensitive" : True,
               "stopOnFirstLine"   : True,
-              "parserOptions"     : { 
-                  "dictionary"       : "stepcontrolDict", 
+              "parserOptions"     : {
+                  "dictionary"       : "stepcontrolDict",
                   "dicttype"         : "standard", # (standard or smartparser)
-                  "readwritedict"    : "write", 
+                  "readwritedict"    : "write",
                   "keyMapper"        : {"TS" : "MDcurrentstep",
                                         "DCDSTEP" : "MDcurrentstep",
                                         "VELSTEP" : "MDcurrentstep",
                                         "FORCESTEP" : "MDcurrentstep"},
                   "updatefunc"       : "max",
                   "updateattrs"      : ["MDcurrentstep"],
-                  "controlsections"  : ["section_single_configuration_calculation"], 
-                  "controlsave"      : "sectioncontrol", 
+                  "controlsections"  : ["section_single_configuration_calculation"],
+                  "controlsave"      : "sectioncontrol",
                   "controldict"      : "stepcontrolDict",
                   "controlattrs"     : ["MDcurrentstep"],
                   "preprocess"       : self.convertInt,
                   "postprocess"      : self.convertInt,
                   #"parsercntrlattr"  : "MDcurrentstep",
                   #"parsercntrlin"    : "steps",
-                  #"lookupdict"       : "stepcontrolDict" 
+                  #"lookupdict"       : "stepcontrolDict"
                   }
               },
             # time save Parser
@@ -976,16 +975,16 @@ class NAMDParser(SmartParser.ParserBase):
               "waitlist"          : None,
               "stopOnMatchStr"    : "AlwaysStop",
               "quitOnMatchStr"    : "AlwaysStop",
-              "metaNameStart"     : PARSERTAG + "_mdout_", 
+              "metaNameStart"     : PARSERTAG + "_mdout_",
               "matchNameList"     : mddataNameList,
               "matchNameDict"     : "mddataDict",
               "updateMatchDict"   : True,
               "onlyCaseSensitive" : True,
               "stopOnFirstLine"   : True,
-              "parserOptions"     : { 
-                  "dictionary"       : "mddataDict", 
+              "parserOptions"     : {
+                  "dictionary"       : "mddataDict",
                   "dicttype"         : "smartparser", # (standard or smartparser)
-                  "readwritedict"    : "read", 
+                  "readwritedict"    : "read",
                   "keyMapper"        : {"TIME" : "TS"},
                   "preprocess"       : self.convertInt,
                   "postprocess"      : self.updateTime,
@@ -1007,16 +1006,16 @@ class NAMDParser(SmartParser.ParserBase):
               "updateMatchDict"   : False,
               "onlyCaseSensitive" : True,
               "stopOnFirstLine"   : True,
-              "parserOptions"     : { 
-                  "sectionname"      : "section_single_configuration_calculation", 
-                  "sectionopen"      : True, 
-                  "sectionopenattr"  : "MDcurrentstep", 
-                  "sectionopenin"    : "steps", 
-                  "sectionclose"     : True, 
-                  "sectioncloseattr" : "MDcurrentstep", 
-                  "sectionclosein"   : "steps", 
-                  "activatesection"  : "sectioncontrol", 
-                  "lookupdict"       : "stepcontrolDict" 
+              "parserOptions"     : {
+                  "sectionname"      : "section_single_configuration_calculation",
+                  "sectionopen"      : True,
+                  "sectionopenattr"  : "MDcurrentstep",
+                  "sectionopenin"    : "steps",
+                  "sectionclose"     : True,
+                  "sectioncloseattr" : "MDcurrentstep",
+                  "sectionclosein"   : "steps",
+                  "activatesection"  : "sectioncontrol",
+                  "lookupdict"       : "stepcontrolDict"
                   }
               },
             # Step Control Parser
@@ -1032,18 +1031,18 @@ class NAMDParser(SmartParser.ParserBase):
               "updateMatchDict"   : False,
               "onlyCaseSensitive" : True,
               "stopOnFirstLine"   : True,
-              "parserOptions"     : { 
+              "parserOptions"     : {
                   "waitatlineStr"    : r"\s*ENERGY:\s*",
-                  "controlwait"      : None, 
-                  #"controlwait"      : "nextlogsteps", 
-                  "controlattr"      : "MDcurrentstep", 
-                  "controlnextattr"  : "MDnextstep", 
-                  "controllast"      : -1, 
-                  "controlskip"      : [], 
-                  "controlin"        : "steps", 
-                  "controlcounter"   : "targetstep", 
+                  "controlwait"      : None,
+                  #"controlwait"      : "nextlogsteps",
+                  "controlattr"      : "MDcurrentstep",
+                  "controlnextattr"  : "MDnextstep",
+                  "controllast"      : -1,
+                  "controlskip"      : [],
+                  "controlin"        : "steps",
+                  "controlcounter"   : "targetstep",
                   "controldict"      : "stepcontrolDict",
-                  "lookupdict"       : "stepcontrolDict" 
+                  "lookupdict"       : "stepcontrolDict"
                   }
               }
             ]
@@ -1060,7 +1059,7 @@ class NAMDParser(SmartParser.ParserBase):
               "stopOnMatchStr"    : r"\s*Info:\s*(?:SUMMARY\s*OF\s*PARAMETERS:|"
                                      "STRUCTURE\s*SUMMARY:)",
               "quitOnMatchStr"    : None,
-              "metaNameStart"     : PARSERTAG + "_inout_control_", 
+              "metaNameStart"     : PARSERTAG + "_inout_control_",
               "matchNameList"     : cntrlNameList,
               "matchNameDict"     : "cntrlDict",
               "updateMatchDict"   : True,
@@ -1076,16 +1075,16 @@ class NAMDParser(SmartParser.ParserBase):
               "quitOnMatchStr"    : None,
               "stopOnMatchStr"    : "AlwaysStop",
               "quitOnMatchStr"    : "AlwaysStop",
-              "metaNameStart"     : PARSERTAG + "_mdin_method_", 
+              "metaNameStart"     : PARSERTAG + "_mdin_method_",
               "matchNameList"     : extraNameList,
               "matchNameDict"     : "extraDict",
               "updateMatchDict"   : True,
               "onlyCaseSensitive" : True,
               "stopOnFirstLine"   : True,
-              "parserOptions"     : { 
-                  "dictionary"       : "cntrlDict", 
+              "parserOptions"     : {
+                  "dictionary"       : "cntrlDict",
                   "dicttype"         : "smartparser", # (standard or smartparser)
-                  "readwritedict"    : "read", 
+                  "readwritedict"    : "read",
                   "keyMapper"        : {
                       "minimization" : "MINIMIZATION",
                       "minimization" : "VELOCITY QUENCHING",
@@ -1112,16 +1111,16 @@ class NAMDParser(SmartParser.ParserBase):
               "waitlist"          : None,
               "stopOnMatchStr"    : "AlwaysStop",
               "quitOnMatchStr"    : "AlwaysStop",
-              "metaNameStart"     : PARSERTAG + "_inout_file", 
+              "metaNameStart"     : PARSERTAG + "_inout_file",
               "matchNameList"     : fileNameList,
               "matchNameDict"     : "fileDict",
               "updateMatchDict"   : True,
               "onlyCaseSensitive" : True,
               "stopOnFirstLine"   : True,
-              "parserOptions"     : { 
-                  "dictionary"       : "cntrlDict", 
+              "parserOptions"     : {
+                  "dictionary"       : "cntrlDict",
                   "dicttype"         : "smartparser", # (standard or smartparser)
-                  "readwritedict"    : "read", 
+                  "readwritedict"    : "read",
                   "keyMapper"        : {
                       "structure"    : "STRUCTURE FILE",
                       "traj_coord"   : "Info: DCD FILENAME",
@@ -1151,31 +1150,31 @@ class NAMDParser(SmartParser.ParserBase):
                        startReStr=r"\s*Info:\s*NAMD\s*"
                                    "(?P<program_version>[0-9.]+)\s*for\s*"
                                    "(?P<"+PARSERTAG+"_build_osarch>.+)\s*"),
-                    SM(name='license', 
+                    SM(name='license',
                        startReStr=r"\s*Info:\s*Please\s*visit\s*",
-                       coverageIgnore=True, 
-                       adHoc=lambda p: 
-                       self.adHoc_read_store_text_stop_parsing(p, 
+                       coverageIgnore=True,
+                       adHoc=lambda p:
+                       self.adHoc_read_store_text_stop_parsing(p,
                            stopOnMatchStr=r"\s*Info:\s*(?:Info:Based|"
                                            "Built|Running|Configuration)\s*",
                            quitOnMatchStr=None,
-                           metaNameStart=PARSERTAG+"_", 
-                           metaNameStore=PARSERTAG+"_program_citation", 
+                           metaNameStart=PARSERTAG+"_",
+                           metaNameStore=PARSERTAG+"_program_citation",
                            matchNameList=None,
                            matchNameDict=None,
                            onlyCaseSensitive=True,
                            stopOnFirstLine=False,
                            storeFirstLine=True,
                            storeStopQuitLine=True,
-                           onQuitRunFunction=lambda p: p.backend.addValue( 
-                               PARSERTAG+"_program_citation", 
+                           onQuitRunFunction=lambda p: p.backend.addValue(
+                               PARSERTAG+"_program_citation",
                                p.lastMatch[
                                    PARSERTAG+"_program_citation"
                                    ].replace('\n', ' ').replace('Info:', ' ')
                                )
                            )
                        ),
-                    SM(name='loghostinfo', 
+                    SM(name='loghostinfo',
                        startReStr=r"\s*Info:\s*Built\s*"
                                    "(?P<"+PARSERTAG+"_program_build_date>"
                                    "[a-zA-Z0-9:. ]+)\s*by"),
@@ -1185,11 +1184,11 @@ class NAMDParser(SmartParser.ParserBase):
                                  "STRUCTURE\s*SUMMARY|Entering\s*startup)\s*",
                        forwardMatch=True,
                        sections=['section_sampling_method', PARSERTAG + '_section_control_parameters'],
-                       adHoc=lambda p: 
+                       adHoc=lambda p:
                        self.adHoc_takingover_parsing(p,
                            stopOnMatchStr=r"\s*Info:\s*(?:SUMMARY\s*OF\s*PARAMETERS|"
                                            "STRUCTURE\s*SUMMARY|Entering\s*startup)",
-                           quitOnMatchStr=None, 
+                           quitOnMatchStr=None,
                            stopControl="stopControl", # if None or True, stop with quitMatch, else wait
                            record=False, # if False or None, no record, no replay
                            replay=0, # if 0 or None= no replay, if <0 infinite replay
@@ -1201,8 +1200,8 @@ class NAMDParser(SmartParser.ParserBase):
                        startReStr=r"\s*Info:\s*Finished\s*startup",
                        forwardMatch=True,
                        sections=[PARSERTAG+'_section_input_output_files'],
-                       coverageIgnore=True, 
-                       adHoc=lambda p: 
+                       coverageIgnore=True,
+                       adHoc=lambda p:
                        self.adHoc_takingover_parsing(p,
                            stopOnMatchStr=r"^\s*$",
                            quitOnMatchStr=r"^\s*$",
@@ -1232,7 +1231,7 @@ class NAMDParser(SmartParser.ParserBase):
                                      startReStr=r"\s*ETITLE:\s*TS\s*"
                                                  "(?P<"+PARSERTAG+"_mdin_finline>.*)(?:'|\")?\s*,?",
                                      forwardMatch=True,
-                                     adHoc=lambda p: 
+                                     adHoc=lambda p:
                                      self.adHoc_takingover_parsing(p,
                                          stopOnMatchStr=r"^====================================================",
                                          quitOnMatchStr=r"^====================================================",
@@ -1252,10 +1251,33 @@ class NAMDParser(SmartParser.ParserBase):
                        subMatchers=[
                            SM(r"^WallClock:\s*[0-9:.eEdD]+\s*CPUTime:\s*[0-9.:eEdD]+\s*Memory:\s*[0-9:.KMGTB ]+"),
                        ]), # END Computation
-                    SM(name='end_run', 
+                    SM(name='end_run',
                        startReStr=r"\s*End\s*of\s*program\s*"),
                 ]) # END NewRun
             ]
+
+
+class NamdParserInterface():
+   """ A proper class envolop for running this parser from within python. """
+   def __init__(self, backend, **kwargs):
+       self.backend_factory = backend
+
+   def parse(self, mainfile):
+        from unittest.mock import patch
+        logging.info('namd parser started')
+        logging.getLogger('nomadcore').setLevel(logging.WARNING)
+        backend = self.backend_factory("namd.nomadmetainfo.json")
+        parserInfo = {'name': 'namd-parser', 'version': '1.0'}
+        context = NAMDParser()
+        with patch.object(sys, 'argv', ['<exe>', '--uri', 'nmd://uri', mainfile]):
+            mainFunction(
+                mainFileDescription=context.mainFileDescription(),
+                metaInfoEnv=None,
+                parserInfo=parserInfo,
+                cachingLevelForMetaName=context.cachingLevelForMetaName,
+                superContext=context,
+                superBackend=backend)
+        return backend
 
 
 if __name__ == "__main__":
