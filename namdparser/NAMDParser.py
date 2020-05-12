@@ -34,6 +34,7 @@ import re
 import sys
 import datetime
 import io
+from nomadcore.simple_parser import mainFunction
 
 ############################################################
 # This is the parser for the main file of NAMD.
@@ -1269,6 +1270,7 @@ class NamdParserInterface():
         backend = self.backend_factory("namd.nomadmetainfo.json")
         parserInfo = {'name': 'namd-parser', 'version': '1.0'}
         context = NAMDParser()
+        context.coverageIgnore = re.compile(r"^(?:" + r"|".join(context.coverageIgnoreList) + r")$")
         with patch.object(sys, 'argv', ['<exe>', '--uri', 'nmd://uri', mainfile]):
             mainFunction(
                 mainFileDescription=context.mainFileDescription(),
