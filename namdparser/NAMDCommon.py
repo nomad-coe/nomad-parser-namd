@@ -13,8 +13,6 @@
 #   limitations under the License.
 
 import logging
-import os
-import metainfo
 
 PARSERNAME = "NAMD"
 PROGRAMNAME = "namd"
@@ -27,9 +25,7 @@ PARSER_INFO_DEFAULT = {
         'version': PARSERVERSION
 }
 
-META_INFO_PATH = os.path.normpath(os.path.join(
-    os.path.dirname(os.path.abspath(metainfo.__file__)),
-    PARSERMETANAME+".nomadmetainfo.json"))
+META_INFO_PATH = PARSERMETANAME+".nomadmetainfo.json"
 
 LOGGER = logging.getLogger("nomad."+PROGRAMNAME+"Parser")
 
