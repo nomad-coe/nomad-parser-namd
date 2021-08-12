@@ -36,16 +36,16 @@ def test_basic(parser):
 
     parser.parse('tests/data/apoa1-notraj/apoa1.log', archive, None)
 
-    sec_run = archive.section_run[0]
-    assert sec_run.program_version == 'NAMD 2.12'
+    sec_run = archive.run[0]
+    assert sec_run.program.version == 'NAMD 2.12'
 
-    sec_system = archive.section_run[0].section_system[0]
-    assert sec_system.atom_positions[80][1].magnitude == approx(9.629e-10)
-    assert sec_system.atom_labels[57] == 'H'
+    sec_system = archive.run[0].system[0]
+    assert sec_system.atoms.positions[80][1].magnitude == approx(9.629e-10)
+    assert sec_system.atoms.labels[57] == 'H'
 
-    sec_sccs = sec_run.section_single_configuration_calculation
+    sec_sccs = sec_run.calculation
     len(sec_sccs) == 501
-    assert sec_sccs[37].energy_total.magnitude == approx(-1.540870627208654e-15)
+    assert sec_sccs[37].energy.total.value.magnitude == approx(-1.540870627208654e-15)
 
 
 def test_1(parser):
@@ -53,8 +53,8 @@ def test_1(parser):
 
     parser.parse('tests/data/er-gre-traj/er-gre.log', archive, None)
 
-    sec_system = archive.section_run[0].section_system[0]
-    assert sec_system.atom_labels[48] == 'C'
+    sec_system = archive.run[0].system[0]
+    assert sec_system.atoms.labels[48] == 'C'
 
-    sec_scc = archive.section_run[0].section_single_configuration_calculation[101]
-    assert sec_scc.energy_total.magnitude == approx(-6.533433369963276e-16)
+    sec_scc = archive.run[0].calculation[101]
+    assert sec_scc.energy.total.value.magnitude == approx(-6.533433369963276e-16)
