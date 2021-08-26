@@ -16,4 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import namdparser.metainfo.namd
+from nomad.metainfo import Environment
+
+from . import namd
+
+m_env = Environment()
+m_env.m_add_sub_section(Environment.packages, namd.m_package)

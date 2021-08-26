@@ -26,6 +26,9 @@ from nomad.datamodel.metainfo import run
 from nomad.datamodel.metainfo import workflow
 
 
+m_package = Package()
+
+
 class x_namd_mdin_input_output_files(MCategory):
     '''
     Parameters of mdin belonging to x_namd_section_control_parameters.
